@@ -227,6 +227,7 @@ docker exec agent-zero supervisorctl stop discord_bridge
 # 2. Remove the supervisord config block
 #    Open the file and delete the [program:discord_bridge] block:
 docker exec agent-zero nano /etc/supervisor/conf.d/supervisord.conf
+#    Alternatively, you can do this via the Files browser in the Agent Zero GUI.
 #    Then reload:
 docker exec agent-zero supervisorctl reread && docker exec agent-zero supervisorctl update
 
