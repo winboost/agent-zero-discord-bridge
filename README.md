@@ -216,6 +216,12 @@ You only "pay" (in LLM credits) when someone actually sends a message through Di
 
 ---
 
+## See Also
+
+- [Agent Zero Telegram Bridge](https://github.com/winboost/agent-zero-telegram-bridge) — Same concept for Telegram
+
+---
+
 ## License
 
 MIT
