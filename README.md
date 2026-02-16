@@ -114,15 +114,19 @@ If you have a running bot instance (from step 7 or otherwise), kill it first:
 docker exec agent-zero pkill -9 -f discord_bridge.py
 ```
 
-To make it auto-start with the container, add it to the container's supervisord config (which Agent Zero already uses to manage its processes). Copy and paste this entire block into your terminal as a single command — it will append the config to the file automatically:
+To make it auto-start with the container, add it to the container's supervisord config (which Agent Zero already uses to manage its processes). **Pick one of the two options below — not both.**
 
-> Alternatively, you can manually add the block (starting from `[program:discord_bridge]`) by editing `/etc/supervisor/conf.d/supervisord.conf` via the Files browser in the Agent Zero GUI.
+#### Option A: Paste a command (quick)
+
+Copy and paste this single command into your terminal — it appends the config block automatically:
 
 ```bash
 docker exec agent-zero bash -c 'printf "\n[program:discord_bridge]\ncommand=/opt/venv/bin/python3 /a0/usr/workdir/discord_bridge.py\nenvironment=\nuser=root\ndirectory=/a0\nstopwaitsecs=10\nstdout_logfile=/dev/stdout\nstdout_logfile_maxbytes=0\nstderr_logfile=/dev/stderr\nstderr_logfile_maxbytes=0\nautorestart=true\nstartretries=3\nstopasgroup=true\nkillasgroup=true\n" >> /etc/supervisor/conf.d/supervisord.conf'
 ```
 
-The block that gets appended to the file:
+#### Option B: Edit the file manually
+
+Open `/etc/supervisor/conf.d/supervisord.conf` via the Files browser in the Agent Zero GUI and add this block at the end of the file:
 
 ```ini
 [program:discord_bridge]
@@ -141,10 +145,13 @@ stopasgroup=true
 killasgroup=true
 ```
 
-> **⚠️ Important:** If you ever run that command twice, you'd get a duplicate `[program:discord_bridge]` block in the file, which would cause supervisor to error. So it should only be run once. You can always verify the file looks correct with:
+---
+
+> **⚠️ Important:** Whichever option you chose, make sure the block only appears **once** in the file. A duplicate `[program:discord_bridge]` block will cause supervisor to error. You can verify the file looks correct with:
 > ```bash
 > docker exec agent-zero cat /etc/supervisor/conf.d/supervisord.conf
 > ```
+
 
 ### 9. Reload and start
 
