@@ -119,8 +119,12 @@ To make it auto-start with the container, add it to the container's supervisord 
 > Alternatively, you can manually add the block (starting from `[program:discord_bridge]`) by editing `/etc/supervisor/conf.d/supervisord.conf` via the Files browser in the Agent Zero GUI.
 
 ```bash
-docker exec agent-zero bash -c 'cat >> /etc/supervisor/conf.d/supervisord.conf << EOF
+docker exec agent-zero bash -c 'printf "\n[program:discord_bridge]\ncommand=/opt/venv/bin/python3 /a0/usr/workdir/discord_bridge.py\nenvironment=\nuser=root\ndirectory=/a0\nstopwaitsecs=10\nstdout_logfile=/dev/stdout\nstdout_logfile_maxbytes=0\nstderr_logfile=/dev/stderr\nstderr_logfile_maxbytes=0\nautorestart=true\nstartretries=3\nstopasgroup=true\nkillasgroup=true\n" >> /etc/supervisor/conf.d/supervisord.conf'
+```
 
+The block that gets appended to the file:
+
+```ini
 [program:discord_bridge]
 command=/opt/venv/bin/python3 /a0/usr/workdir/discord_bridge.py
 environment=
@@ -135,7 +139,6 @@ autorestart=true
 startretries=3
 stopasgroup=true
 killasgroup=true
-EOF'
 ```
 
 > **⚠️ Important:** If you ever run that command twice, you'd get a duplicate `[program:discord_bridge]` block in the file, which would cause supervisor to error. So it should only be run once. You can always verify the file looks correct with:
