@@ -216,6 +216,34 @@ You only "pay" (in LLM credits) when someone actually sends a message through Di
 
 ---
 
+## Uninstall / Cleanup
+
+To fully remove the bot from your Agent Zero container:
+
+```bash
+# 1. Stop and remove the supervisord entry (if configured)
+docker exec agent-zero supervisorctl stop discord_bridge
+
+# 2. Remove the supervisord config block
+#    Open the file and delete the [program:discord_bridge] block:
+docker exec agent-zero nano /etc/supervisor/conf.d/supervisord.conf
+#    Then reload:
+docker exec agent-zero supervisorctl reread && docker exec agent-zero supervisorctl update
+
+# 3. Kill any running instance
+docker exec agent-zero pkill -9 -f discord_bridge.py
+
+# 4. Delete the bot script and log file
+docker exec agent-zero rm -f /a0/usr/workdir/discord_bridge.py /a0/usr/workdir/discord_bridge.log
+
+# 5. Remove the DISCORD_BOT_TOKEN line from /a0/usr/.env
+docker exec agent-zero sed -i '/DISCORD_BOT_TOKEN/d' /a0/usr/.env
+```
+
+Optionally, you can also delete or deactivate the bot application in the [Discord Developer Portal](https://discord.com/developers/applications).
+
+---
+
 ## See Also
 
 - [Agent Zero Telegram Bridge](https://github.com/winboost/agent-zero-telegram-bridge) — Same concept for Telegram
