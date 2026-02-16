@@ -16,6 +16,6 @@ Lightweight Python scripts that run inside your Agent Zero Docker container, bri
 - **Private:** Local execution.
 
 **Repositories**
-**1. Agent Zero Telegram Bridge** (Recommended): https://github.com/winboost/agent-zero-telegram-bridge
+**1. Agent Zero Telegram Bridge** (Recommended): <https://github.com/winboost/agent-zero-telegram-bridge>
 
-**2. Agent Zero Discord Bridge**: https://github.com/winboost/agent-zero-discord-bridge
+**2. Agent Zero Discord Bridge**: <https://github.com/winboost/agent-zero-discord-bridge>
