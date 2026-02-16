@@ -116,6 +116,8 @@ docker exec agent-zero pkill -9 -f discord_bridge.py
 
 To make it auto-start with the container, add it to the container's supervisord config (which Agent Zero already uses to manage its processes). Copy and paste this entire block into your terminal as a single command — it will append the config to the file automatically:
 
+> Alternatively, you can manually add the block (starting from `[program:discord_bridge]`) by editing `/etc/supervisor/conf.d/supervisord.conf` via the Files browser in the Agent Zero GUI.
+
 ```bash
 docker exec agent-zero bash -c 'cat >> /etc/supervisor/conf.d/supervisord.conf << EOF
 
