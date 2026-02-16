@@ -218,7 +218,7 @@ You only "pay" (in LLM credits) when someone actually sends a message through Di
 
 ## Uninstall / Cleanup
 
-To fully remove the bot from your Agent Zero container:
+To fully remove the bot from your Agent Zero container (no container restart needed):
 
 ```bash
 # 1. Stop and remove the supervisord entry (if configured)
