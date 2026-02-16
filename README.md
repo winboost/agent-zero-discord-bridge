@@ -114,7 +114,7 @@ If you have a running bot instance (from step 7 or otherwise), kill it first:
 docker exec agent-zero pkill -9 -f discord_bridge.py
 ```
 
-To make it auto-start with the container, add it to the container's supervisord config (which Agent Zero already uses to manage its processes). Run this command (or simply append the config block to `/etc/supervisor/conf.d/supervisord.conf`):
+To make it auto-start with the container, add it to the container's supervisord config (which Agent Zero already uses to manage its processes). Copy and paste this entire block into your terminal as a single command — it will append the config to the file automatically:
 
 ```bash
 docker exec agent-zero bash -c 'cat >> /etc/supervisor/conf.d/supervisord.conf << EOF
