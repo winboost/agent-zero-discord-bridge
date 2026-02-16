@@ -1,4 +1,4 @@
-# Agent Zero Discord Bot Bridge
+# Agent Zero Discord Bridge
 
 A Discord bot that bridges messages to [Agent Zero](https://github.com/frdel/agent-zero)'s HTTP API, enabling you to chat with your AI agent directly from Discord.
 
@@ -17,7 +17,7 @@ This bot bridges Discord to Agent Zero's HTTP API running inside the Docker cont
 
 **Response Format:** The API returns `{"context_id": "...", "response": "..."}` synchronously — the request blocks until the agent finishes thinking (up to 5 minutes timeout). The bot shows a typing indicator during this wait.
 
-**Runtime Environment:** The bot must run with `/opt/venv/bin/python3` (Agent Zero's virtual environment) so it can import the settings module for API key discovery. The script lives at `/a0/usr/workdir/bot_bridge.py`.
+**Runtime Environment:** The bot must run with `/opt/venv/bin/python3` (Agent Zero's virtual environment) so it can import the settings module for API key discovery. The script lives at `/a0/usr/workdir/discord_bridge.py`.
 
 ---
 
@@ -43,7 +43,7 @@ You can do this via the Files browser in the Agent Zero GUI.
 
 ### 2. Upload the bot script
 
-Upload `bot_bridge.py` into `/a0/usr/workdir`.
+Upload `discord_bridge.py` into `/a0/usr/workdir`.
 
 Again, you can utilize the Files browser in Agent Zero.
 
@@ -60,7 +60,7 @@ docker exec agent-zero /opt/venv/bin/pip install aiohttp
 I'd recommend launching with `-it` first to confirm everything starts cleanly:
 
 ```bash
-docker exec -it agent-zero /opt/venv/bin/python3 /a0/usr/workdir/bot_bridge.py
+docker exec -it agent-zero /opt/venv/bin/python3 /a0/usr/workdir/discord_bridge.py
 ```
 
 You should see:
@@ -85,13 +85,13 @@ Send a message in Discord and the agent should reply!
 Once you've confirmed the bot responds, kill the `-it` instance (closing the terminal doesn't always kill it):
 
 ```bash
-docker exec agent-zero pkill -f bot_bridge.py
+docker exec agent-zero pkill -f discord_bridge.py
 ```
 
 If you ever need an instant kill, `-9` sends SIGKILL which can't be caught — the process dies immediately:
 
 ```bash
-docker exec agent-zero pkill -9 -f bot_bridge.py
+docker exec agent-zero pkill -9 -f discord_bridge.py
 ```
 
 > **Note:** Wait a minute or two and the bot should go grey/offline on Discord. Discord has a grace period of about 30–60 seconds before it marks a bot as offline.
@@ -103,7 +103,7 @@ docker exec agent-zero pkill -9 -f bot_bridge.py
 Switch to the `-d` approach to run it in background (since `-d` detaches immediately, you won't see the startup banner or any errors):
 
 ```bash
-docker exec -d agent-zero /opt/venv/bin/python3 /a0/usr/workdir/bot_bridge.py
+docker exec -d agent-zero /opt/venv/bin/python3 /a0/usr/workdir/discord_bridge.py
 ```
 
 ### 8. Auto-start with container (recommended)
@@ -111,7 +111,7 @@ docker exec -d agent-zero /opt/venv/bin/python3 /a0/usr/workdir/bot_bridge.py
 If you have a running bot instance (from step 7 or otherwise), kill it first:
 
 ```bash
-docker exec agent-zero pkill -9 -f bot_bridge.py
+docker exec agent-zero pkill -9 -f discord_bridge.py
 ```
 
 To make it auto-start with the container, add it to the container's supervisord config (which Agent Zero already uses to manage its processes). Run this command (or simply append the config block to `/etc/supervisor/conf.d/supervisord.conf`):
@@ -119,8 +119,8 @@ To make it auto-start with the container, add it to the container's supervisord 
 ```bash
 docker exec agent-zero bash -c 'cat >> /etc/supervisor/conf.d/supervisord.conf << EOF
 
-[program:bot_bridge]
-command=/opt/venv/bin/python3 /a0/usr/workdir/bot_bridge.py
+[program:discord_bridge]
+command=/opt/venv/bin/python3 /a0/usr/workdir/discord_bridge.py
 environment=
 user=root
 directory=/a0
@@ -136,7 +136,7 @@ killasgroup=true
 EOF'
 ```
 
-> **⚠️ Important:** If you ever run that command twice, you'd get a duplicate `[program:bot_bridge]` block in the file, which would cause supervisor to error. So it should only be run once. You can always verify the file looks correct with:
+> **⚠️ Important:** If you ever run that command twice, you'd get a duplicate `[program:discord_bridge]` block in the file, which would cause supervisor to error. So it should only be run once. You can always verify the file looks correct with:
 > ```bash
 > docker exec agent-zero cat /etc/supervisor/conf.d/supervisord.conf
 > ```
@@ -150,7 +150,7 @@ docker exec agent-zero supervisorctl reread && docker exec agent-zero supervisor
 ### 10. Verify (optional)
 
 ```bash
-docker exec agent-zero supervisorctl status bot_bridge
+docker exec agent-zero supervisorctl status discord_bridge
 ```
 
 From now on the bot will auto-start with the container.
@@ -161,37 +161,37 @@ From now on the bot will auto-start with the container.
 
 ```bash
 # Stop the bot
-docker exec agent-zero supervisorctl stop bot_bridge
+docker exec agent-zero supervisorctl stop discord_bridge
 
 # Start the bot
-docker exec agent-zero supervisorctl start bot_bridge
+docker exec agent-zero supervisorctl start discord_bridge
 
 # Restart the bot
-docker exec agent-zero supervisorctl restart bot_bridge
+docker exec agent-zero supervisorctl restart discord_bridge
 
 # Status of all services
 docker exec agent-zero supervisorctl status
 
 # Kill the bot (any running instance)
-docker exec agent-zero pkill -f bot_bridge.py
+docker exec agent-zero pkill -f discord_bridge.py
 
 # Instant kill
-docker exec agent-zero pkill -9 -f bot_bridge.py
+docker exec agent-zero pkill -9 -f discord_bridge.py
 
 # Verify it's gone
-docker exec agent-zero pgrep -f bot_bridge.py
+docker exec agent-zero pgrep -f discord_bridge.py
 
 # Check if the process is alive
-docker exec agent-zero ps aux | grep bot_bridge
+docker exec agent-zero ps aux | grep discord_bridge
 
 # View live logs (supervisord-managed)
 docker logs agent-zero --tail 50
 
 # Alternative: redirect output to a log file
-docker exec -d agent-zero bash -c '/opt/venv/bin/python3 /a0/usr/workdir/bot_bridge.py > /a0/usr/workdir/bot_bridge.log 2>&1'
+docker exec -d agent-zero bash -c '/opt/venv/bin/python3 /a0/usr/workdir/discord_bridge.py > /a0/usr/workdir/discord_bridge.log 2>&1'
 
 # Tail the log file
-docker exec agent-zero tail -f /a0/usr/workdir/bot_bridge.log
+docker exec agent-zero tail -f /a0/usr/workdir/discord_bridge.log
 ```
 
 ## Discord Bot Commands

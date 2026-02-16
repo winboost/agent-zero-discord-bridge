@@ -1,9 +1,9 @@
 """
-Agent Zero <-> Discord Bot Bridge
+Agent Zero <-> Discord Bridge
 Bridges Discord messages to Agent Zero's /api_message HTTP API.
 
 Usage:
-    docker exec -it agent-zero /opt/venv/bin/python3 /a0/usr/workdir/bot_bridge.py
+    docker exec -it agent-zero /opt/venv/bin/python3 /a0/usr/workdir/discord_bridge.py
 
 Requirements (inside container):
     /opt/venv/bin/pip install aiohttp discord.py python-dotenv
@@ -85,7 +85,7 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
-log = logging.getLogger("bot_bridge")
+log = logging.getLogger("discord_bridge")
 
 # ---------------------------------------------------------------------------
 # Discord Client
