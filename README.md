@@ -41,9 +41,9 @@ Copy the bot token and add `DISCORD_BOT_TOKEN=your_token_here` to `/a0/usr/.env`
 
 You can do this via the Files browser in the Agent Zero GUI.
 
-### 2. Upload the bot script
+### 2. Download and upload the bot script
 
-Upload `discord_bridge.py` into `/a0/usr/workdir`.
+Download [`discord_bridge.py`](https://raw.githubusercontent.com/winboost/agent-zero-discord-bridge/main/discord_bridge.py) and upload it into `/a0/usr/workdir`.
 
 Again, you can utilize the Files browser in Agent Zero.
 
