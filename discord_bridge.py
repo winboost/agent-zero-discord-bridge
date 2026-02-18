@@ -52,6 +52,7 @@ DISCORD_MAX_LEN = 2000
 # Auto-discover Agent Zero API key from runtime settings
 # ---------------------------------------------------------------------------
 
+
 def get_a0_api_key() -> str:
     """
     Try to read the mcp_server_token from Agent Zero's settings module.
@@ -65,6 +66,7 @@ def get_a0_api_key() -> str:
     # Auto-discover from A0 settings
     try:
         from python.helpers.settings import get_settings
+
         token = get_settings().get("mcp_server_token", "")
         if token:
             return token
@@ -138,6 +140,11 @@ async def send_to_agent(message_text: str, context_id: str = "") -> dict:
     headers = {
         "Content-Type": "application/json",
         "X-API-KEY": A0_API_KEY,
+        # Identify the request as coming from localhost.
+        # Required when a reverse proxy (e.g. Cloudflare tunnel) is active and
+        # SearXNG's bot-detection middleware sits in front of port 80.
+        "X-Forwarded-For": "127.0.0.1",
+        "X-Real-IP": "127.0.0.1",
     }
 
     timeout = aiohttp.ClientTimeout(total=A0_TIMEOUT)
@@ -164,7 +171,9 @@ async def send_to_agent(message_text: str, context_id: str = "") -> dict:
 async def on_ready():
     log.info(f"Bot is logged in as {bot.user}")
     log.info(f"A0 API URL: {A0_API_URL}")
-    log.info(f"A0 API Key: {A0_API_KEY[:4]}{'*' * (len(A0_API_KEY) - 4) if A0_API_KEY else '(MISSING)'}")
+    log.info(
+        f"A0 API Key: {A0_API_KEY[:4]}{'*' * (len(A0_API_KEY) - 4) if A0_API_KEY else '(MISSING)'}"
+    )
     log.info(f"Timeout: {A0_TIMEOUT}s")
     if ALLOWED_CHANNEL_SET:
         log.info(f"Restricted to channels: {ALLOWED_CHANNEL_SET}")
@@ -219,7 +228,9 @@ async def on_message(message: discord.Message):
     # ---- Forward to Agent Zero ----
     context_id = channel_contexts.get(channel_id, "")
 
-    log.info(f"[{message.author}] → Agent Zero: {content[:100]}{'...' if len(content) > 100 else ''}")
+    log.info(
+        f"[{message.author}] → Agent Zero: {content[:100]}{'...' if len(content) > 100 else ''}"
+    )
 
     # Show typing indicator while the agent processes
     try:
@@ -235,7 +246,9 @@ async def on_message(message: discord.Message):
             if not reply:
                 reply = "(Agent returned an empty response)"
 
-            log.info(f"Agent Zero → [{message.author}]: {reply[:100]}{'...' if len(reply) > 100 else ''}")
+            log.info(
+                f"Agent Zero → [{message.author}]: {reply[:100]}{'...' if len(reply) > 100 else ''}"
+            )
 
             # Send response, splitting if needed
             chunks = split_message(reply)
