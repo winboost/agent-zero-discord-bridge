@@ -51,11 +51,11 @@ Again, you can utilize the Files browser in Agent Zero.
 
 ### 3. Install dependencies
 
-Ensure `aiohttp` is installed (`discord.py` should already be there):
-
 ```bash
-docker exec agent-zero /opt/venv/bin/pip install aiohttp
+docker exec agent-zero /opt/venv/bin/pip install aiohttp discord.py python-telegram-bot python-dotenv
 ```
+
+> **Note:** We recommend installing the dependencies for both the Telegram and Discord bridges at once. This is the most robust method — packages that are already pre-installed (such as `discord.py`, which is included in Agent Zero by default) will simply report as 'already satisfied' and be safely skipped.
 
 ### 4. Launch the bot
 
